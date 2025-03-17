@@ -1,0 +1,243 @@
+import { ClaudeRequest, ClaudeResponse, OptimizationPromptParams } from './types';
+import { OptimizedListing } from '../../../entities/marketplace';
+
+// The Claude API endpoint URL
+const CLAUDE_API_URL = 'https://api.anthropic.com/v1/messages';
+
+// Replace with your Claude API key - in production, this should come from environment variables
+// For the demo, we're using a placeholder API key
+const CLAUDE_API_KEY = 'sk-ant-api...'; // Add your actual API key when testing
+
+/**
+ * Creates a prompt for optimizing a product listing for a specific platform
+ */
+const createOptimizationPrompt = (params: OptimizationPromptParams): string => {
+  const { product, platform, optimizationFocus, targetAudience, platformRequirements } = params;
+  
+  return `
+You are an expert e-commerce listing optimizer. Your task is to optimize the following product listing for ${platform}.
+
+${platform.toUpperCase()} SPECIFIC CONSIDERATIONS:
+- Character limits: Title max ${platformRequirements.titleMaxLength} characters, Description max ${platformRequirements.descriptionMaxLength} characters
+- Tags/Keywords: Maximum ${platformRequirements.maxTags} tags
+- Required attributes: ${platformRequirements.requiredAttributes.join(', ')}
+- Supported categories: ${platformRequirements.supportedCategories.join(', ')}
+- Best practices:
+  * ${platform === 'etsy' ? 'Use specific, descriptive titles that include materials and intended use' : ''}
+  * ${platform === 'shopify' ? 'Focus on clear, benefit-driven product descriptions' : ''}
+  * ${platform === 'amazon' ? 'Include key specs in bullet points and follow Amazon\'s style guidelines' : ''}
+
+PRODUCT INFORMATION:
+Title: ${product.title}
+Description: ${product.description}
+Price: $${product.price}
+Category: ${product.category}
+Tags: ${product.tags.join(', ')}
+Attributes: ${Object.entries(product.attributes)
+  .map(([key, value]) => `${key}: ${value}`)
+  .join(', ')}
+
+${optimizationFocus ? `OPTIMIZATION FOCUS:\n${optimizationFocus}\n` : ''}
+${targetAudience ? `TARGET AUDIENCE:\n${targetAudience}\n` : ''}
+
+Please generate an optimized listing with:
+1. Title (optimized for ${platform})
+2. Description (formatted appropriately for ${platform})
+3. Tags/keywords (maximum relevance for ${platform})
+4. Category recommendation from the supported categories
+5. SEO recommendations
+${platform === 'amazon' ? '6. Bullet points for Amazon listing' : ''}
+
+Respond in JSON format using the following structure:
+{
+  "title": "optimized title",
+  "description": "optimized description",
+  "tags": ["tag1", "tag2", ...],
+  "category": "recommended category",
+  "seoMetadata": {
+    "metaTitle": "SEO-optimized title",
+    "metaDescription": "SEO-optimized description"
+  }${platform === 'amazon' ? ',\n  "bulletPoints": ["point1", "point2", ...]' : ''}
+}
+
+Ensure that your response strictly follows these character limits and format requirements. The JSON should be valid and parseable.
+`;
+};
+
+/**
+ * Calls the Claude API to generate optimized product listing content
+ */
+export const generateOptimizedContent = async (
+  params: OptimizationPromptParams
+): Promise<OptimizedListing> => {
+  // In a real implementation, this would make an actual API call
+  // For this demo, we'll mock the response
+  
+  console.log(`Generating optimized content for ${params.platform}...`);
+  
+  // This is a simulation - in a real implementation, you would call the Claude API
+  // const prompt = createOptimizationPrompt(params);
+  // const response = await callClaudeAPI(prompt);
+  // return parseClaudeResponse(response, params);
+  
+  // For demo purposes, return a mock response
+  return mockOptimizedListing(params);
+};
+
+/**
+ * Makes the actual API call to Claude
+ * This is just the implementation structure - not used in the demo
+ */
+const callClaudeAPI = async (prompt: string): Promise<ClaudeResponse> => {
+  const request: ClaudeRequest = {
+    model: 'claude-3-7-sonnet-20240219',
+    max_tokens: 4000,
+    messages: [
+      {
+        role: 'user',
+        content: prompt
+      }
+    ]
+  };
+  
+  try {
+    const response = await fetch(CLAUDE_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-API-Key': CLAUDE_API_KEY,
+        'Anthropic-Version': '2023-06-01'
+      },
+      body: JSON.stringify(request)
+    });
+    
+    if (!response.ok) {
+      throw new Error(`API call failed with status: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Error calling Claude API:', error);
+    throw error;
+  }
+};
+
+/**
+ * Parses the Claude API response into an OptimizedListing
+ * This is just the implementation structure - not used in the demo
+ */
+const parseClaudeResponse = (
+  response: ClaudeResponse, 
+  params: OptimizationPromptParams
+): OptimizedListing => {
+  try {
+    // Extract the text content from the response
+    const content = response.content[0].text;
+    
+    // Find the JSON part of the response
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    
+    if (!jsonMatch) {
+      throw new Error('No JSON found in response');
+    }
+    
+    const parsedData = JSON.parse(jsonMatch[0]);
+    
+    return {
+      platform: params.platform,
+      title: parsedData.title,
+      description: parsedData.description,
+      tags: parsedData.tags,
+      category: parsedData.category,
+      bulletPoints: parsedData.bulletPoints,
+      seoMetadata: parsedData.seoMetadata,
+      originalProduct: params.product
+    };
+  } catch (error) {
+    console.error('Error parsing Claude response:', error);
+    throw new Error('Failed to parse optimization response');
+  }
+};
+
+/**
+ * Generates a mock optimized listing for demo purposes
+ */
+const mockOptimizedListing = (params: OptimizationPromptParams): OptimizedListing => {
+  const { product, platform, optimizationFocus } = params;
+  
+  // Simulate a delay to mimic API call
+  return new Promise(resolve => {
+    setTimeout(() => {
+      // Generate platform-specific mock data
+      let optimizedListing: OptimizedListing;
+      
+      switch (platform) {
+        case 'shopify':
+          optimizedListing = {
+            platform,
+            title: `${product.title} - Premium Quality ${optimizationFocus ? `| ${optimizationFocus}` : ''}`,
+            description: `${product.description}\n\nOur premium quality ${product.title} is designed to exceed your expectations. Made with the finest materials and exceptional craftsmanship, this product offers durability and performance that stands the test of time.${optimizationFocus ? `\n\n${optimizationFocus}` : ''}`,
+            tags: [...product.tags, 'premium', 'quality', 'shopify-exclusive'],
+            category: product.category,
+            recommendedPrice: product.price * 1.1,
+            seoMetadata: {
+              metaTitle: `Buy Premium ${product.title} | Free Shipping`,
+              metaDescription: `Shop our exclusive ${product.title} with premium features and free shipping. Perfect for ${optimizationFocus || 'everyday use'}.`
+            },
+            originalProduct: product
+          };
+          break;
+          
+        case 'etsy':
+          optimizedListing = {
+            platform,
+            title: `Handcrafted ${product.title} | ${optimizationFocus || 'Unique Design'} | Perfect Gift`,
+            description: `${product.description}\n\nThis handcrafted ${product.title} is lovingly made with attention to every detail. Each piece is unique and makes a perfect gift for any occasion. Our customers love the exceptional quality and artistic design.`,
+            tags: [...product.tags.slice(0, 8), 'handmade', 'artisan', 'gift idea', 'unique'],
+            category: product.category === 'Home & Garden' ? 'Home & Living' : product.category === 'Apparel' ? 'Clothing' : product.category,
+            seoMetadata: {
+              metaTitle: `Handmade ${product.title} | Artisan Crafted`,
+              metaDescription: `Unique handcrafted ${product.title} made with love. Perfect for gifts or treating yourself. Fast shipping and eco-friendly packaging.`
+            },
+            originalProduct: product
+          };
+          break;
+          
+        case 'amazon':
+          optimizedListing = {
+            platform,
+            title: `${product.title} - Professional Grade ${optimizationFocus ? `| ${optimizationFocus}` : ''} (${product.variants.length} Options)`,
+            description: `Experience the premium quality of our ${product.title}. Designed for durability and performance, this product will exceed your expectations.\n\nOur customers love:\n- The exceptional craftsmanship\n- Premium materials\n- Outstanding customer service\n\nClick Add to Cart now before we sell out again!`,
+            bulletPoints: [
+              `Premium Quality: Made with the finest materials for lasting durability`,
+              `Versatile Design: Perfect for multiple uses and occasions`,
+              `Satisfaction Guaranteed: 30-day money-back guarantee if you're not completely satisfied`,
+              `Thoughtful Gift: Makes an excellent present for friends and family`,
+              `Fast Shipping: Quick delivery with careful packaging`
+            ],
+            tags: product.tags.slice(0, 5),
+            category: product.category === 'Apparel' ? 'Clothing' : product.category === 'Home & Garden' ? 'Home & Kitchen' : product.category,
+            recommendedPrice: product.price * 1.15,
+            seoMetadata: {
+              metaTitle: `${product.title} - Professional Grade | Prime Shipping`,
+              metaDescription: `Shop our premium ${product.title} with fast Prime shipping. Professional grade quality with 30-day guarantee.`
+            },
+            originalProduct: product
+          };
+          break;
+          
+        default:
+          optimizedListing = {
+            platform,
+            title: product.title,
+            description: product.description,
+            tags: product.tags,
+            category: product.category,
+            originalProduct: product
+          };
+      }
+      
+      resolve(optimizedListing);
+    }, 1500); // Simulate API delay
+  });
+};
