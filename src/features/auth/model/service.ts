@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { User, LoginCredentials, SignupCredentials, SubscriptionPlan } from './types';
+import { backendAPI } from '../../../shared/api/backend';
 
 // Mock database for users - in a real app, this would be a backend API
 const mockUsers: User[] = [
@@ -13,57 +14,55 @@ const mockUsers: User[] = [
   }
 ];
 
-export const login = async (credentials: LoginCredentials): Promise<User> => {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // This is just a mock - in a real app, you would validate credentials on the server
-  const user = mockUsers.find(u => u.email === credentials.email);
-  
-  if (!user) {
-    throw new Error('Invalid credentials');
+export const login = async (loginCredentials: LoginCredentials): Promise<User> => {
+  try {
+    // Call the backend API for login
+    const response = await backendAPI.auth.login(loginCredentials.email, loginCredentials.password);
+    
+    // Store token
+    localStorage.setItem('access_token', response.access_token);
+    
+    // Get user information
+    const authUser = await backendAPI.auth.getCurrentUser();
+    
+    // Store in localStorage for persistence
+    localStorage.setItem('user', JSON.stringify(authUser));
+    
+    return authUser;
+  } catch (error) {
+    console.error('Login error:', error);
+    throw error;
   }
-  
-  // Store in localStorage for persistence
-  localStorage.setItem('user', JSON.stringify(user));
-  
-  return user;
 };
 
-export const signup = async (credentials: SignupCredentials): Promise<User> => {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Check if user already exists
-  if (mockUsers.some(u => u.email === credentials.email)) {
-    throw new Error('User already exists');
+export const signup = async (signupCredentials: SignupCredentials): Promise<User> => {
+  try {
+    // Call the backend API for registration
+    const authUser = await backendAPI.auth.register(signupCredentials);
+    
+    // After registration, login to get token
+    await login({ 
+      email: signupCredentials.email, 
+      password: signupCredentials.password 
+    });
+    
+    return authUser;
+  } catch (error) {
+    console.error('Signup error:', error);
+    throw error;
   }
-  
-  // Create new user
-  const newUser: User = {
-    id: uuidv4(),
-    email: credentials.email,
-    firstName: credentials.firstName,
-    lastName: credentials.lastName,
-    avatar: `https://ui-avatars.com/api/?name=${credentials.firstName}+${credentials.lastName}&background=0D8ABC&color=fff`,
-    subscriptionPlan: 'free' // New users start with free plan
-  };
-  
-  // Add to mock database
-  mockUsers.push(newUser);
-  
-  // Store in localStorage for persistence
-  localStorage.setItem('user', JSON.stringify(newUser));
-  
-  return newUser;
 };
 
 export const logout = async (): Promise<void> => {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 500));
-  
-  // Remove from localStorage
-  localStorage.removeItem('user');
+  try {
+    // No need to call backend for logout with JWT
+    // Just remove token and user from localStorage
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('user');
+  } catch (error) {
+    console.error('Logout error:', error);
+    throw error;
+  }
 };
 
 export const getCurrentUser = (): User | null => {
@@ -79,26 +78,25 @@ export const getCurrentUser = (): User | null => {
 };
 
 export const updateSubscriptionPlan = async (userId: string, plan: SubscriptionPlan): Promise<User> => {
-  // Simulate API call
-  await new Promise(resolve => setTimeout(resolve, 1000));
-  
-  // Find user in mock database
-  const userIndex = mockUsers.findIndex(u => u.id === userId);
-  if (userIndex === -1) {
-    throw new Error('User not found');
+  try {
+    // In a real implementation, this would call the backend API
+    // For now, we'll just update the local storage
+    const currentUser = getCurrentUser();
+    
+    if (!currentUser) {
+      throw new Error('User not found');
+    }
+    
+    const updatedUser = {
+      ...currentUser,
+      subscriptionPlan: plan
+    };
+    
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    
+    return updatedUser;
+  } catch (error) {
+    console.error('Update subscription error:', error);
+    throw error;
   }
-  
-  // Update user's subscription plan
-  mockUsers[userIndex] = {
-    ...mockUsers[userIndex],
-    subscriptionPlan: plan
-  };
-  
-  // Update in localStorage if it's the current user
-  const currentUser = getCurrentUser();
-  if (currentUser?.id === userId) {
-    localStorage.setItem('user', JSON.stringify(mockUsers[userIndex]));
-  }
-  
-  return mockUsers[userIndex];
 };
