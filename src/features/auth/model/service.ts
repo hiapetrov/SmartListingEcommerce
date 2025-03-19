@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+﻿import { v4 as uuidv4 } from 'uuid';
 import { User, LoginCredentials, SignupCredentials, SubscriptionPlan } from './types';
 import { backendAPI } from '../../../shared/api/backend';
 
@@ -100,3 +100,4 @@ export const updateSubscriptionPlan = async (userId: string, plan: SubscriptionP
     throw error;
   }
 };
+

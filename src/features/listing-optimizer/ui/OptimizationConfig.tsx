@@ -1,10 +1,14 @@
-import React from 'react';
+﻿import React, { useState } from 'react';
+import { ModelSelector } from './ModelSelector';
+import { SubscriptionPrompt } from './SubscriptionPrompt';
 
 interface OptimizationConfigProps {
   optimizationFocus: string;
   targetAudience: string;
+  selectedModelId: string;
   onOptimizationFocusChange: (focus: string) => void;
   onTargetAudienceChange: (audience: string) => void;
+  onModelChange: (modelId: string) => void;
   onSubmit: () => void;
   isSubmitting: boolean;
 }
@@ -12,14 +16,40 @@ interface OptimizationConfigProps {
 export const OptimizationConfig: React.FC<OptimizationConfigProps> = ({
   optimizationFocus,
   targetAudience,
+  selectedModelId,
   onOptimizationFocusChange,
   onTargetAudienceChange,
+  onModelChange,
   onSubmit,
   isSubmitting
 }) => {
+  const [isPromptOpen, setIsPromptOpen] = useState(false);
+  const [requiredSubscription, setRequiredSubscription] = useState('basic');
+  
+  const handleShowSubscriptionPrompt = (subscription: string) => {
+    setRequiredSubscription(subscription);
+    setIsPromptOpen(true);
+  };
+  
+  const handleUpgrade = () => {
+    // Close the prompt
+    setIsPromptOpen(false);
+    
+    // Here you would navigate to the subscription page
+    // For now, we'll just log it
+    console.log('Navigating to subscription page for', requiredSubscription);
+    alert('This would navigate to the subscription page in a real implementation.');
+  };
+  
   return (
     <div className="bg-gray-800 rounded-lg p-6 mb-6">
       <h3 className="text-lg font-semibold text-white mb-4">Optimization Settings</h3>
+      
+      <ModelSelector
+        selectedModelId={selectedModelId}
+        onModelChange={onModelChange}
+        showSubscriptionPrompt={handleShowSubscriptionPrompt}
+      />
       
       <div className="mb-4">
         <label htmlFor="optimizationFocus" className="block text-sm font-medium text-gray-300 mb-2">
@@ -62,6 +92,13 @@ export const OptimizationConfig: React.FC<OptimizationConfigProps> = ({
       >
         {isSubmitting ? 'Optimizing...' : 'Generate Optimized Listings'}
       </button>
+      
+      <SubscriptionPrompt
+        isOpen={isPromptOpen}
+        onClose={() => setIsPromptOpen(false)}
+        requiredSubscription={requiredSubscription}
+        onUpgrade={handleUpgrade}
+      />
     </div>
   );
 };

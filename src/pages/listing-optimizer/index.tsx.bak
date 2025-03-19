@@ -11,8 +11,7 @@ const ListingOptimizerPage: React.FC = () => {
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>(['shopify', 'etsy']);
   const [optimizationFocus, setOptimizationFocus] = useState('');
-  const [targetAudience, setTargetAudience] = useState('');
-  const [selectedModelId, setSelectedModelId] = useState('');
+  const [targetAudience, setTargetAudience] = useState('');\n  const [selectedModelId, setSelectedModelId] = useState('');
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [optimizationResult, setOptimizationResult] = useState<{
     masterProduct: Product;
@@ -255,5 +254,4 @@ const ListingOptimizerPage: React.FC = () => {
 };
 
 export default ListingOptimizerPage;
-
 

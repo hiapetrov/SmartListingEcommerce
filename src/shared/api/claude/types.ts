@@ -1,5 +1,6 @@
 import { Product } from '../../../entities/product';
 import { MarketplaceProductRequirements, OptimizedListing } from '../../../entities/marketplace';
+import { OptimizedListingCard } from '@/widgets/optimized-listing-card';
 
 export interface ClaudeRequest {
   model: string;
@@ -37,3 +38,5 @@ export interface OptimizationPromptParams {
   targetAudience: string;
   platformRequirements: MarketplaceProductRequirements;
 }
+
+export interface OptimizedListing{}

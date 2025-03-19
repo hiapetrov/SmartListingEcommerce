@@ -10,9 +10,8 @@ const CLAUDE_API_KEY = 'sk-ant-api...'; // Add your actual API key when testing
 
 /**
  * Creates a prompt for optimizing a product listing for a specific platform
- * @private
  */
-const createOptimizationPrompt = (params: OptimizationPromptParams): string => {
+/**\n * Creates a prompt for Claude API\n * @private\n */\nconst createOptimizationPrompt = (params: OptimizationPromptParams): string => {
   const { product, platform, optimizationFocus, targetAudience, platformRequirements } = params;
   
   return `
@@ -72,11 +71,32 @@ export const generateOptimizedContent = async (
   params: OptimizationPromptParams
 ): Promise<OptimizedListing> => {
   // In a real implementation, this would make an actual API call
-  // For this demo, we'll mock the response
+  // For this demo, we'll use the mock response, but we'll also have the backend API call code ready
   
   console.log(`Generating optimized content for ${params.platform}...`);
   
-  // Uncomment this code to use the backend API instead of the mock
+  // Now calling the backend API instead of Claude directly
+  const token = localStorage.getItem("access_token");
+  const response = await fetch(CLAUDE_API_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({
+      product: params.product,
+      platforms: [params.platform],
+      optimizationFocus: params.optimizationFocus,
+      targetAudience: params.targetAudience
+    })
+  }).then(res => {
+    if (!res.ok) throw new Error("Optimization failed");
+    return res.json();
+  });
+  return response.optimizedListings.find(listing => listing.platform === params.platform);
+  
+  // For demo purposes, return a mock response
+    // Uncomment this code to use the backend API instead of the mock
   /* 
   const token = localStorage.getItem("access_token");
   const response = await fetch(CLAUDE_API_URL, {
@@ -89,8 +109,7 @@ export const generateOptimizedContent = async (
       product: params.product,
       platforms: [params.platform],
       optimizationFocus: params.optimizationFocus,
-      targetAudience: params.targetAudience,
-      modelId: params.modelId
+      targetAudience: params.targetAudience
     })
   }).then(res => {
     if (!res.ok) throw new Error("Optimization failed");
@@ -105,9 +124,9 @@ export const generateOptimizedContent = async (
 
 /**
  * Makes the actual API call to Claude
- * @private
+ * This is just the implementation structure - not used in the demo
  */
-const callClaudeAPI = async (prompt: string): Promise<ClaudeResponse> => {
+/**\n * Makes a call to Claude API\n * @private\n */\nconst callClaudeAPI = async (prompt: string): Promise<ClaudeResponse> => {
   const request: ClaudeRequest = {
     model: 'claude-3-7-sonnet-20240219',
     max_tokens: 4000,
@@ -143,9 +162,9 @@ const callClaudeAPI = async (prompt: string): Promise<ClaudeResponse> => {
 
 /**
  * Parses the Claude API response into an OptimizedListing
- * @private
+ * This is just the implementation structure - not used in the demo
  */
-const parseClaudeResponse = (
+/**\n * Parses Claude API response\n * @private\n */\nconst parseClaudeResponse = (
   response: ClaudeResponse, 
   params: OptimizationPromptParams
 ): OptimizedListing => {
@@ -177,15 +196,15 @@ const parseClaudeResponse = (
     throw new Error('Failed to parse optimization response');
   }
 };
+
 /**
  * Generates a mock optimized listing for demo purposes
- * @private
  */
 const mockOptimizedListing = (params: OptimizationPromptParams): OptimizedListing => {
   const { product, platform, optimizationFocus } = params;
   
   // Simulate a delay to mimic API call
-  return new Promise<OptimizedListing>(resolve => {
+  return new Promise(resolve => {
     setTimeout(() => {
       // Generate platform-specific mock data
       let optimizedListing: OptimizedListing;
@@ -260,4 +279,5 @@ const mockOptimizedListing = (params: OptimizationPromptParams): OptimizedListin
     }, 1500); // Simulate API delay
   });
 };
+
 

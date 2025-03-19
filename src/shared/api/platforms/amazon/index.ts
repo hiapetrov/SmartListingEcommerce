@@ -1,5 +1,5 @@
-import { OptimizedListing } from '../../../entities/marketplace';
-import { PublishResult } from '../../../features/platform-publish';
+import { OptimizedListing } from '../../../../entities/marketplace';
+import { PublishResult } from '../../../../features/platform-publish';
 
 export interface AmazonCredentials {
   sellerId: string;

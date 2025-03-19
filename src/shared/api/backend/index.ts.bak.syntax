@@ -15,7 +15,7 @@ const request = async (endpoint: string, options: RequestInit = {}) => {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...getAuthHeader(),
-    ...(options.headers as Record<string, string> || {})
+    ...options.headers
   };
   
   const config = {
@@ -127,18 +127,9 @@ export const optimizationAPI = {
     optimizationFocus?: string;
     targetAudience?: string;
   }) => {
-    return await fetch(`${API_BASE_URL}/optimizations`, {
+    return request('/optimizations', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeader(),
-      },
       body: JSON.stringify(request),
-    }).then(res => {
-      if (!res.ok) {
-        throw new Error('Optimization failed');
-      }
-      return res.json();
     });
   },
 };
@@ -154,16 +145,7 @@ export const publishingAPI = {
   }) => {
     return await fetch(`${API_BASE_URL}/publishing`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeader(),
-      },
       body: JSON.stringify(request),
-    }).then(res => {
-      if (!res.ok) {
-        throw new Error('Publishing failed');
-      }
-      return res.json();
     });
   },
   
@@ -176,16 +158,7 @@ export const publishingAPI = {
   }>) => {
     return await fetch(`${API_BASE_URL}/publishing/batch`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeader(),
-      },
       body: JSON.stringify(requests),
-    }).then(res => {
-      if (!res.ok) {
-        throw new Error('Batch publishing failed');
-      }
-      return res.json();
     });
   },
 };
@@ -199,3 +172,4 @@ export const backendAPI = {
 };
 
 export default backendAPI;
+
