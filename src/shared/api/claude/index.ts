@@ -1,18 +1,31 @@
 ﻿import { ClaudeRequest, ClaudeResponse, OptimizationPromptParams } from './types';
 import { OptimizedListing } from '../../../entities/marketplace';
 
-// The Claude API endpoint URL
-const CLAUDE_API_URL = "http://localhost:8000/api/optimizations";
+// Use the proxy endpoint instead of calling Claude API directly
+const CLAUDE_PROXY_URL = "http://localhost:3000/api/proxy/claude";
 
-// Replace with your Claude API key - in production, this should come from environment variables
-// For the demo, we're using a placeholder API key
-const CLAUDE_API_KEY = 'sk-ant-api...'; // Add your actual API key when testing
+/**
+ * Calls the Claude API through the backend proxy to generate optimized product listing content
+ */
+export const generateOptimizedContent = async (
+  params: OptimizationPromptParams
+): Promise<OptimizedListing> => {
+  console.log(`Generating optimized content for ${params.platform} using Claude API...`);
+  
+  // Create the prompt for Claude
+  const prompt = createOptimizationPrompt(params);
+  
+  // Call the Claude API through our proxy
+  const claudeResponse = await callClaudeAPIProxy(prompt);
+  
+  // Parse the response into an OptimizedListing
+  return parseClaudeResponse(claudeResponse, params);
+};
 
 /**
  * Creates a prompt for optimizing a product listing for a specific platform
- * @private
  */
-const createOptimizationPrompt = (params: OptimizationPromptParams): string => {
+function createOptimizationPrompt(params: OptimizationPromptParams): string {
   const { product, platform, optimizationFocus, targetAudience, platformRequirements } = params;
   
   return `
@@ -63,53 +76,14 @@ Respond in JSON format using the following structure:
 
 Ensure that your response strictly follows these character limits and format requirements. The JSON should be valid and parseable.
 `;
-};
+}
 
 /**
- * Calls the Claude API to generate optimized product listing content
+ * Makes the API call to Claude through our backend proxy
  */
-export const generateOptimizedContent = async (
-  params: OptimizationPromptParams
-): Promise<OptimizedListing> => {
-  // In a real implementation, this would make an actual API call
-  // For this demo, we'll mock the response
-  
-  console.log(`Generating optimized content for ${params.platform}...`);
-  
-  // Uncomment this code to use the backend API instead of the mock
-  /* 
-  const token = localStorage.getItem("access_token");
-  const response = await fetch(CLAUDE_API_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`
-    },
-    body: JSON.stringify({
-      product: params.product,
-      platforms: [params.platform],
-      optimizationFocus: params.optimizationFocus,
-      targetAudience: params.targetAudience,
-      modelId: params.modelId
-    })
-  }).then(res => {
-    if (!res.ok) throw new Error("Optimization failed");
-    return res.json();
-  });
-  return response.optimizedListings.find(listing => listing.platform === params.platform);
-  */
-  
-  // For demo purposes, return a mock response
-  return mockOptimizedListing(params);
-};
-
-/**
- * Makes the actual API call to Claude
- * @private
- */
-const callClaudeAPI = async (prompt: string): Promise<ClaudeResponse> => {
+function callClaudeAPIProxy(prompt: string): Promise<ClaudeResponse> {
   const request: ClaudeRequest = {
-    model: 'claude-3-7-sonnet-20240219',
+    model: 'claude-3-sonnet-20240229', // Using Claude 3 Sonnet
     max_tokens: 4000,
     messages: [
       {
@@ -119,36 +93,28 @@ const callClaudeAPI = async (prompt: string): Promise<ClaudeResponse> => {
     ]
   };
   
-  try {
-    const response = await fetch(CLAUDE_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-Key': CLAUDE_API_KEY,
-        'Anthropic-Version': '2023-06-01'
-      },
-      body: JSON.stringify(request)
-    });
-    
+  return fetch(CLAUDE_PROXY_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(request)
+  })
+  .then(response => {
     if (!response.ok) {
       throw new Error(`API call failed with status: ${response.status}`);
     }
-    
-    return await response.json();
-  } catch (error) {
-    console.error('Error calling Claude API:', error);
-    throw error;
-  }
-};
+    return response.json();
+  });
+}
 
 /**
  * Parses the Claude API response into an OptimizedListing
- * @private
  */
-const parseClaudeResponse = (
+function parseClaudeResponse(
   response: ClaudeResponse, 
   params: OptimizationPromptParams
-): OptimizedListing => {
+): OptimizedListing {
   try {
     // Extract the text content from the response
     const content = response.content[0].text;
@@ -176,88 +142,5 @@ const parseClaudeResponse = (
     console.error('Error parsing Claude response:', error);
     throw new Error('Failed to parse optimization response');
   }
-};
-/**
- * Generates a mock optimized listing for demo purposes
- * @private
- */
-const mockOptimizedListing = (params: OptimizationPromptParams): OptimizedListing => {
-  const { product, platform, optimizationFocus } = params;
-  
-  // Simulate a delay to mimic API call
-  return new Promise<OptimizedListing>(resolve => {
-    setTimeout(() => {
-      // Generate platform-specific mock data
-      let optimizedListing: OptimizedListing;
-      
-      switch (platform) {
-        case 'shopify':
-          optimizedListing = {
-            platform,
-            title: `${product.title} - Premium Quality ${optimizationFocus ? `| ${optimizationFocus}` : ''}`,
-            description: `${product.description}\n\nOur premium quality ${product.title} is designed to exceed your expectations. Made with the finest materials and exceptional craftsmanship, this product offers durability and performance that stands the test of time.${optimizationFocus ? `\n\n${optimizationFocus}` : ''}`,
-            tags: [...product.tags, 'premium', 'quality', 'shopify-exclusive'],
-            category: product.category,
-            recommendedPrice: product.price * 1.1,
-            seoMetadata: {
-              metaTitle: `Buy Premium ${product.title} | Free Shipping`,
-              metaDescription: `Shop our exclusive ${product.title} with premium features and free shipping. Perfect for ${optimizationFocus || 'everyday use'}.`
-            },
-            originalProduct: product
-          };
-          break;
-          
-        case 'etsy':
-          optimizedListing = {
-            platform,
-            title: `Handcrafted ${product.title} | ${optimizationFocus || 'Unique Design'} | Perfect Gift`,
-            description: `${product.description}\n\nThis handcrafted ${product.title} is lovingly made with attention to every detail. Each piece is unique and makes a perfect gift for any occasion. Our customers love the exceptional quality and artistic design.`,
-            tags: [...product.tags.slice(0, 8), 'handmade', 'artisan', 'gift idea', 'unique'],
-            category: product.category === 'Home & Garden' ? 'Home & Living' : product.category === 'Apparel' ? 'Clothing' : product.category,
-            seoMetadata: {
-              metaTitle: `Handmade ${product.title} | Artisan Crafted`,
-              metaDescription: `Unique handcrafted ${product.title} made with love. Perfect for gifts or treating yourself. Fast shipping and eco-friendly packaging.`
-            },
-            originalProduct: product
-          };
-          break;
-          
-        case 'amazon':
-          optimizedListing = {
-            platform,
-            title: `${product.title} - Professional Grade ${optimizationFocus ? `| ${optimizationFocus}` : ''} (${product.variants.length} Options)`,
-            description: `Experience the premium quality of our ${product.title}. Designed for durability and performance, this product will exceed your expectations.\n\nOur customers love:\n- The exceptional craftsmanship\n- Premium materials\n- Outstanding customer service\n\nClick Add to Cart now before we sell out again!`,
-            bulletPoints: [
-              `Premium Quality: Made with the finest materials for lasting durability`,
-              `Versatile Design: Perfect for multiple uses and occasions`,
-              `Satisfaction Guaranteed: 30-day money-back guarantee if you're not completely satisfied`,
-              `Thoughtful Gift: Makes an excellent present for friends and family`,
-              `Fast Shipping: Quick delivery with careful packaging`
-            ],
-            tags: product.tags.slice(0, 5),
-            category: product.category === 'Apparel' ? 'Clothing' : product.category === 'Home & Garden' ? 'Home & Kitchen' : product.category,
-            recommendedPrice: product.price * 1.15,
-            seoMetadata: {
-              metaTitle: `${product.title} - Professional Grade | Prime Shipping`,
-              metaDescription: `Shop our premium ${product.title} with fast Prime shipping. Professional grade quality with 30-day guarantee.`
-            },
-            originalProduct: product
-          };
-          break;
-          
-        default:
-          optimizedListing = {
-            platform,
-            title: product.title,
-            description: product.description,
-            tags: product.tags,
-            category: product.category,
-            originalProduct: product
-          };
-      }
-      
-      resolve(optimizedListing);
-    }, 1500); // Simulate API delay
-  });
-};
+}
 

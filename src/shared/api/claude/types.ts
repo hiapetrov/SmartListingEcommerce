@@ -1,6 +1,5 @@
-import { Product } from '../../../entities/product';
-import { MarketplaceProductRequirements, OptimizedListing } from '../../../entities/marketplace';
-import { OptimizedListingCard } from '@/widgets/optimized-listing-card';
+﻿import { Product } from '../../../entities/product';
+import { MarketplaceProductRequirements } from '../../../entities/marketplace';
 
 export interface ClaudeRequest {
   model: string;
@@ -37,6 +36,5 @@ export interface OptimizationPromptParams {
   optimizationFocus: string;
   targetAudience: string;
   platformRequirements: MarketplaceProductRequirements;
+  modelId?: string; // Added modelId property
 }
-
-export interface OptimizedListing{}

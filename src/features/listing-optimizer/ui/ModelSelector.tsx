@@ -37,7 +37,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
       try {
         // This would be an actual API call in production
         // For now, we're mocking the response
-        const response = await fetch('http://localhost:8000/api/optimizations', {
+        const response = await fetch('http://localhost:3000/api/optimizations', {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`
           }
@@ -126,7 +126,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         provider: 'Anthropic',
         description: 'Excellent for creative, nuanced listing optimization',
         tier: 'pro',
-        isAvailable: ['pro', 'enterprise'].includes(subscription),
+        isAvailable: true, // Make available for all users,
         requiredSubscription: 'pro'
       },
       {
@@ -135,7 +135,7 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
         provider: 'Anthropic',
         description: 'Premium optimization with advanced market understanding and SEO',
         tier: 'enterprise',
-        isAvailable: subscription === 'enterprise',
+        isAvailable: true ,// Make available for all users,
         requiredSubscription: 'enterprise'
       }
     ];
@@ -193,3 +193,5 @@ export const ModelSelector: React.FC<ModelSelectorProps> = ({
     </div>
   );
 };
+
+

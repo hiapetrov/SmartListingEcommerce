@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "email": "demo@example.com",
+    "firstName": "awdas",
+    "lastName": "asdasda",
+    "hashedPassword": "$2b$10$VdTjiLaC0Ngmq3lzX9M8tuAJqD2t3JLgiChVr27/1hp684ICDEDsa",
+    "subscriptionPlan": "free",
+    "id": "85dbb1ec-bc74-4c33-a546-a4ccf6b37a76",
+    "createdAt": "2025-03-19T23:14:37.830Z",
+    "updatedAt": "2025-03-19T23:14:37.830Z"
+  },
+  {
+    "email": "be@be.be",
+    "firstName": "be",
+    "lastName": "beb",
+    "hashedPassword": "$2b$10$JTtfrSwBlegL0cvNsoPGlOBaq2iSCrebq4OBzxpc4JaMGzUh/WL4S",
+    "subscriptionPlan": "free",
+    "id": "fc9f5e20-62d3-42a5-a1b2-c14e2c32ddfb",
+    "createdAt": "2025-03-19T23:15:43.727Z",
+    "updatedAt": "2025-03-19T23:15:43.727Z"
+  }
+]

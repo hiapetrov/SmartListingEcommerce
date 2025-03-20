@@ -1,15 +1,15 @@
 ﻿// Backend API Connector
 
-const API_BASE_URL = 'http://localhost:8000/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 // Helper function to get authorization header
-const getAuthHeader = () => {
+const getAuthHeader = (): Record<string, string> => {
   const token = localStorage.getItem('access_token');
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
 // Generic request function
-const request = async (endpoint: string, options: RequestInit = {}) => {
+const request = async (endpoint: string, options: RequestInit = {}): Promise<any> => {
   const url = `${API_BASE_URL}${endpoint}`;
   
   const headers: Record<string, string> = {
@@ -18,7 +18,7 @@ const request = async (endpoint: string, options: RequestInit = {}) => {
     ...(options.headers as Record<string, string> || {})
   };
   
-  const config = {
+  const config: RequestInit = {
     ...options,
     headers
   };
@@ -50,13 +50,13 @@ const request = async (endpoint: string, options: RequestInit = {}) => {
 
 // Authentication API
 export const authAPI = {
-  login: async (email: string, password: string) => {
+  login: async (email: string, password: string): Promise<any> => {
     // For login, we need to use x-www-form-urlencoded format
     const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      } as HeadersInit,
       body: new URLSearchParams({
         username: email, // The backend expects 'username' as the field name
         password,
@@ -76,43 +76,43 @@ export const authAPI = {
     password: string;
     firstName: string;
     lastName: string;
-  }) => {
+  }): Promise<any> => {
     return request('/auth/register', {
       method: 'POST',
       body: JSON.stringify(credentials),
     });
   },
   
-  getCurrentUser: async () => {
+  getCurrentUser: async (): Promise<any> => {
     return request('/auth/me');
   },
 };
 
 // Products API
 export const productsAPI = {
-  getAll: async () => {
+  getAll: async (): Promise<any> => {
     return request('/products');
   },
   
-  getById: async (id: string) => {
+  getById: async (id: string): Promise<any> => {
     return request(`/products/${id}`);
   },
   
-  create: async (product: any) => {
+  create: async (product: any): Promise<any> => {
     return request('/products', {
       method: 'POST',
       body: JSON.stringify(product),
     });
   },
   
-  update: async (id: string, product: any) => {
+  update: async (id: string, product: any): Promise<any> => {
     return request(`/products/${id}`, {
       method: 'PUT',
       body: JSON.stringify(product),
     });
   },
   
-  delete: async (id: string) => {
+  delete: async (id: string): Promise<any> => {
     return request(`/products/${id}`, {
       method: 'DELETE',
     });
@@ -126,13 +126,13 @@ export const optimizationAPI = {
     platforms: string[];
     optimizationFocus?: string;
     targetAudience?: string;
-  }) => {
+  }): Promise<any> => {
     return await fetch(`${API_BASE_URL}/optimizations`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeader(),
-      },
+      } as HeadersInit,
       body: JSON.stringify(request),
     }).then(res => {
       if (!res.ok) {
@@ -151,13 +151,13 @@ export const publishingAPI = {
       platform: string;
       credentials: Record<string, string>;
     };
-  }) => {
+  }): Promise<any> => {
     return await fetch(`${API_BASE_URL}/publishing`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeader(),
-      },
+      } as HeadersInit,
       body: JSON.stringify(request),
     }).then(res => {
       if (!res.ok) {
@@ -173,13 +173,13 @@ export const publishingAPI = {
       platform: string;
       credentials: Record<string, string>;
     };
-  }>) => {
+  }>): Promise<any> => {
     return await fetch(`${API_BASE_URL}/publishing/batch`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         ...getAuthHeader(),
-      },
+      } as HeadersInit,
       body: JSON.stringify(requests),
     }).then(res => {
       if (!res.ok) {

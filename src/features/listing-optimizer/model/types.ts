@@ -6,6 +6,7 @@ export interface OptimizationRequest {
   platforms: string[]; // e.g., ["shopify", "etsy", "amazon"]
   optimizationFocus?: string; // e.g., "sustainable materials, gifting"
   targetAudience?: string;
+  modelId?:string;
 }
 
 export interface OptimizationResult {
