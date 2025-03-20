@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Dropdown, DropdownItem, DropdownDivider } from '../../../shared/ui/dropdown';
 import { User } from '../../../features/auth/model/types';
 import { CogIcon, CreditCardIcon, LogoutIcon, UserIcon } from '../../../shared/lib/icons';
@@ -24,9 +25,9 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
     <div className="flex items-center space-x-2">
       <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold overflow-hidden">
         {user.avatar ? (
-          <img src={user.avatar} alt={`${user.firstName} ${user.lastName}`} className="h-full w-full object-cover" />
+          <img src={user.avatar} alt={user.firstName} className="h-full w-full object-cover" />
         ) : (
-          `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
+          ${user.firstName.charAt(0)}
         )}
       </div>
       <span className="text-sm font-medium hidden md:block">
@@ -49,23 +50,23 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
       
       <DropdownItem
         icon={<UserIcon />}
-        onClick={() => console.log('Profile clicked')}
+        onClick={() => {}}
       >
-        Your Profile
+        <Link to="/profile" className="flex-1">Your Profile</Link>
       </DropdownItem>
       
       <DropdownItem
         icon={<CreditCardIcon />}
-        onClick={() => console.log('Subscription clicked')}
+        onClick={() => {}}
       >
-        Subscription
+        <Link to="/subscription" className="flex-1">Subscription</Link>
       </DropdownItem>
       
       <DropdownItem
         icon={<CogIcon />}
-        onClick={() => console.log('Settings clicked')}
+        onClick={() => {}}
       >
-        Settings
+        <Link to="/profile" className="flex-1">Settings</Link>
       </DropdownItem>
       
       <DropdownDivider />

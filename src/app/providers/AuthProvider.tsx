@@ -7,6 +7,7 @@ interface AuthContextProps {
   login: (credentials: LoginCredentials) => Promise<void>;
   signup: (credentials: SignupCredentials) => Promise<void>;
   logout: () => Promise<void>;
+  updateUser: (userData: Partial<User>) => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -23,6 +24,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Check for existing user session on load
     const user = getCurrentUser();
     
+    // For demo purposes, force the user to have enterprise subscription
+    if (user) {
+      user.subscriptionPlan = 'enterprise';
+      localStorage.setItem('user', JSON.stringify(user));
+    }
+    
     setAuthState({
       user,
       isAuthenticated: !!user,
@@ -36,6 +43,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       const user = await login(credentials);
+      
+      // For demo purposes, force the user to have enterprise subscription
+      user.subscriptionPlan = 'enterprise';
+      localStorage.setItem('user', JSON.stringify(user));
+      
       setAuthState({
         user,
         isAuthenticated: true,
@@ -57,6 +69,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       const user = await signup(credentials);
+      
+      // For demo purposes, force the user to have enterprise subscription
+      user.subscriptionPlan = 'enterprise';
+      localStorage.setItem('user', JSON.stringify(user));
+      
       setAuthState({
         user,
         isAuthenticated: true,
@@ -78,6 +95,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     try {
       await logout();
+      
+      // Clear persisted user data
+      localStorage.removeItem('user');
+      
+      // Clear notifications
+      localStorage.removeItem('notifications');
+      
       setAuthState({
         user: null,
         isAuthenticated: false,
@@ -93,13 +117,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
   
+  const updateUser = (userData: Partial<User>) => {
+    if (!authState.user) return;
+    
+    const updatedUser = { ...authState.user, ...userData };
+    
+    // Update localStorage
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    
+    setAuthState(prev => ({
+      ...prev,
+      user: updatedUser
+    }));
+  };
+  
   return (
     <AuthContext.Provider
       value={{
         authState,
         login: handleLogin,
         signup: handleSignup,
-        logout: handleLogout
+        logout: handleLogout,
+        updateUser
       }}
     >
       {children}
