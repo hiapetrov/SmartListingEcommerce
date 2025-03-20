@@ -94,13 +94,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setAuthState(prev => ({ ...prev, isLoading: true }));
     
     try {
-      await logout();
+      // First update the state to ensure UI reflects logout immediately
+      setAuthState({
+        user: null,
+        isAuthenticated: false,
+        isLoading: true,
+        error: null
+      });
       
-      // Clear persisted user data
+      // Clear all auth-related items from localStorage
       localStorage.removeItem('user');
-      
-      // Clear notifications
+      localStorage.removeItem('access_token');
       localStorage.removeItem('notifications');
+      
+      // Then call the logout service (which may clear server-side sessions)
+      await logout();
       
       setAuthState({
         user: null,
@@ -109,11 +117,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         error: null
       });
     } catch (error) {
-      setAuthState(prev => ({
-        ...prev,
+      console.error("Logout error:", error);
+      // Even if the API call fails, we want to ensure the user is logged out locally
+      setAuthState({
+        user: null,
+        isAuthenticated: false,
         isLoading: false,
-        error: error instanceof Error ? error.message : 'Logout failed'
-      }));
+        error: null
+      });
     }
   };
   

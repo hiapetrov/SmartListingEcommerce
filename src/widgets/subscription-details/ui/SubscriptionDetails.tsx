@@ -49,7 +49,7 @@ export const SubscriptionDetails: React.FC = () => {
             Active
           </div>
           
-          <p className="text-2xl font-bold text-white"><span className="text-base font-normal text-gray-400">/month</span></p>
+          <p className="text-2xl font-bold text-white">${plan.price}<span className="text-base font-normal text-gray-400">/month</span></p>
           
           <div className="mt-4 text-sm text-amber-400 font-medium">
             Renews on {formattedRenewalDate}

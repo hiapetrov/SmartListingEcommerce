@@ -27,7 +27,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
         {user.avatar ? (
           <img src={user.avatar} alt={user.firstName} className="h-full w-full object-cover" />
         ) : (
-          ${user.firstName.charAt(0)}
+          `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
         )}
       </div>
       <span className="text-sm font-medium hidden md:block">

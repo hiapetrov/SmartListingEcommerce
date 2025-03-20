@@ -11,6 +11,17 @@ import { Button } from '../../../shared/ui/button';
 export const Header: React.FC = () => {
   const { authState } = useAuth();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [initialAuthView, setInitialAuthView] = useState<'login' | 'signup'>('login');
+  
+  const handleSignInClick = () => {
+    setInitialAuthView('login');
+    setIsAuthModalOpen(true);
+  };
+  
+  const handleSignUpClick = () => {
+    setInitialAuthView('signup');
+    setIsAuthModalOpen(true);
+  };
   
   return (
     <header className="bg-gradient-to-r from-gray-900 to-indigo-900 text-white shadow-lg border-b border-gray-800">
@@ -22,9 +33,11 @@ export const Header: React.FC = () => {
           </Link>
         </div>
         
-        <div className="hidden md:block mx-4 flex-grow max-w-xl">
-          <SearchBar />
-        </div>
+        {authState.isAuthenticated && (
+          <div className="hidden md:block mx-4 flex-grow max-w-xl">
+            <SearchBar />
+          </div>
+        )}
         
         <div className="flex items-center space-x-4">
           {authState.isAuthenticated && (
@@ -38,14 +51,14 @@ export const Header: React.FC = () => {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setIsAuthModalOpen(true)}
+                onClick={handleSignInClick}
               >
                 Sign In
               </Button>
               <Button
                 variant="primary"
                 size="sm"
-                onClick={() => setIsAuthModalOpen(true)}
+                onClick={handleSignUpClick}
               >
                 Sign Up
               </Button>
@@ -57,6 +70,7 @@ export const Header: React.FC = () => {
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
+        initialView={initialAuthView}
       />
     </header>
   );

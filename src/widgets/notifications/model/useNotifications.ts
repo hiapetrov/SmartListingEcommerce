@@ -36,7 +36,7 @@ export function useNotifications() {
         {
           id: uuidv4(),
           type: 'subscription',
-          message: Your  subscription will renew on .,
+          message: `Your ${authState.user.subscriptionPlan} subscription will renew on ${renewalDate}.`,
           timestamp: '5 minutes ago',
           isRead: false,
           link: '/subscription'
