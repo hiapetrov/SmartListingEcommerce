@@ -7,6 +7,8 @@ import ListingOptimizerPage from '../../pages/listing-optimizer';
 import UserProfilePage from '../../pages/user-profile';
 import MyProductsPage from '../../pages/my-products';
 import SubscriptionPage from '../../pages/subscription';
+import DashboardPage from '../../pages/dashboard';
+import { GuestLandingPage } from '../../pages/guest-landing';
 
 export const AppRouter: React.FC = () => {
   const { authState } = useAuth();
@@ -17,18 +19,18 @@ export const AppRouter: React.FC = () => {
       <Routes>
         {isAuthenticated ? (
           <Route path="/" element={<MainLayout />}>
-            <Route index element={<Navigate to="/optimize" replace />} />
+            <Route index element={<DashboardPage />} />
+            <Route path="dashboard" element={<DashboardPage />} />
             <Route path="optimize" element={<ListingOptimizerPage />} />
             <Route path="my-products" element={<MyProductsPage />} />
             <Route path="profile" element={<UserProfilePage />} />
             <Route path="subscription" element={<SubscriptionPage />} />
-            <Route path="*" element={<Navigate to="/optimize" replace />} />
+            <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Route>
         ) : (
           <Route path="/" element={<GuestLayout />}>
-            <Route index element={<ListingOptimizerPage />} />
-            <Route path="optimize" element={<ListingOptimizerPage />} />
-            <Route path="*" element={<ListingOptimizerPage />} />
+            <Route index element={<GuestLandingPage />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         )}
       </Routes>

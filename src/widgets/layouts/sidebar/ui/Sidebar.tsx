@@ -40,6 +40,7 @@ export const Sidebar: React.FC = () => {
       </div>
       
       <nav className="px-2 space-y-1">
+        <NavItem to="/dashboard" label="Dashboard" />
         <NavItem to="/optimize" label="Optimize Listing" />
         <NavItem to="/my-products" label="My Products" />
         <NavItem to="/subscription" label="Subscription" />
