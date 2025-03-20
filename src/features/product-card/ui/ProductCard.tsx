@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { Product } from '../../../entities/product';
 import { Card } from '../../../shared/ui/card';
 

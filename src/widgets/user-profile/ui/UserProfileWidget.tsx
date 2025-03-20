@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+﻿import React, { useState } from 'react';
 import { UserSettings } from '../../../features/user-settings';
 import { useAuth } from '../../../app/providers/AuthProvider';
 import { UserActivity } from './UserActivity';
@@ -20,19 +20,31 @@ export const UserProfileWidget: React.FC = () => {
       <div className="border-b border-gray-700">
         <nav className="flex">
           <button
-            className={px-6 py-4 text-sm font-medium }
+            className={`px-6 py-4 text-sm font-medium ${
+              activeTab === 'details'
+                ? 'text-white border-b-2 border-blue-500'
+                : 'text-gray-400 hover:text-white'
+            }`}
             onClick={() => setActiveTab('details')}
           >
             Account Details
           </button>
           <button
-            className={px-6 py-4 text-sm font-medium }
+            className={`px-6 py-4 text-sm font-medium ${
+              activeTab === 'activity'
+                ? 'text-white border-b-2 border-blue-500'
+                : 'text-gray-400 hover:text-white'
+            }`}
             onClick={() => setActiveTab('activity')}
           >
             Activity
           </button>
           <button
-            className={px-6 py-4 text-sm font-medium }
+            className={`px-6 py-4 text-sm font-medium ${
+              activeTab === 'billing'
+                ? 'text-white border-b-2 border-blue-500'
+                : 'text-gray-400 hover:text-white'
+            }`}
             onClick={() => setActiveTab('billing')}
           >
             Billing & Payments

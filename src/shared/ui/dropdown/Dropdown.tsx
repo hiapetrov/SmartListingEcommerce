@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect } from 'react';
 
 export interface DropdownProps {
   trigger: React.ReactNode;
@@ -59,7 +59,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
       </div>
       
       {isOpen && (
-        <div className={bsolute  mt-2  rounded-md shadow-lg bg-gray-800 border border-gray-700 ring-1 ring-black ring-opacity-5 z-50}>
+        <div className={\bsolute \ mt-2 \ rounded-md shadow-lg bg-gray-800 border border-gray-700 ring-1 ring-black ring-opacity-5 z-50\}>
           <div className="py-1">
             {children}
           </div>
@@ -84,7 +84,7 @@ export const DropdownItem: React.FC<DropdownItemProps> = ({
 }) => {
   return (
     <div
-      className={lex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white cursor-pointer }
+      className={\lex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white cursor-pointer \\}
       onClick={onClick}
     >
       {icon && <span className="mr-2">{icon}</span>}

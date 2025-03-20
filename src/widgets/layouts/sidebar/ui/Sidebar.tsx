@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../../../app/providers/AuthProvider';
 
@@ -13,8 +13,8 @@ const NavItem: React.FC<NavItemProps> = ({ to, label }) => {
     <NavLink
       to={to}
       className={({ isActive }) => 
-        lex items-center px-4 py-3 text-gray-300 rounded-md transition-colors
-        
+        \lex items-center px-4 py-3 text-gray-300 rounded-md transition-colors
+        \\
       }
     >
       <span>{label}</span>
