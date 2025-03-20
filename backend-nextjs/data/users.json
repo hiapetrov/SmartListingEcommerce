@@ -28,5 +28,15 @@
     "id": "0dff6e7c-a92d-4e06-a4a2-3ac852c5ff54",
     "createdAt": "2025-03-20T15:27:21.839Z",
     "updatedAt": "2025-03-20T15:27:21.839Z"
+  },
+  {
+    "email": "newtest@newtest.com",
+    "firstName": "new",
+    "lastName": "test",
+    "hashedPassword": "$2b$10$7cv0upbf6O2x440JN6Q.A.Ku0ccc7DoPxuxVt39CtIOAT0j//EXrO",
+    "subscriptionPlan": "free",
+    "id": "b75753e3-d7f1-4075-9ea3-c1f56cc661cf",
+    "createdAt": "2025-03-20T17:01:37.647Z",
+    "updatedAt": "2025-03-20T17:01:37.647Z"
   }
 ]

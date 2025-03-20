@@ -7,7 +7,7 @@ export interface User {
   subscriptionPlan: SubscriptionPlan;
 }
 
-export type SubscriptionPlan = 'free' | 'basic' | 'pro' | 'enterprise';
+export type SubscriptionPlan = 'free' | 'basic' | 'pro' | 'enterprise' | string;
 
 export interface AuthState {
   user: User | null;
