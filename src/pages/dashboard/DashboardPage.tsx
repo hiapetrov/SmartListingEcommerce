@@ -51,6 +51,12 @@ const DashboardPage: React.FC = () => {
     { id: 'printify', name: 'Printify', status: 'connected', productsCount: 3 }
   ]);
 
+  // Create safe versions of potentially undefined properties
+  const userFirstName = user?.firstName || 'User';
+  const subscriptionPlanName = user?.subscriptionPlan 
+    ? `${user.subscriptionPlan.charAt(0).toUpperCase()}${user.subscriptionPlan.slice(1)}` 
+    : 'Free';
+
   return (
     <div className="space-y-8">
       {/* Welcome Section */}
@@ -58,7 +64,7 @@ const DashboardPage: React.FC = () => {
         <div className="flex items-start justify-between">
           <div>
             <h1 className="text-2xl font-bold text-white mb-2">
-              Welcome back, {user?.firstName}!
+              Welcome back, {userFirstName}!
             </h1>
             <p className="text-indigo-100">
               Here's what's happening with your products and optimizations
@@ -310,12 +316,12 @@ const DashboardPage: React.FC = () => {
             </div>
           </Card>
 
-          {/* Subscription */}
+          {/* Subscription - FIXED PROBLEM AREA */}
           <Card className="bg-gradient-to-br from-indigo-900 to-blue-800 p-6">
             <div className="flex justify-between items-start">
               <div>
                 <h3 className="text-white font-semibold">
-                  {user?.subscriptionPlan.charAt(0).toUpperCase() + user?.subscriptionPlan.slice(1)} Plan
+                  {subscriptionPlanName} Plan
                 </h3>
                 <p className="text-indigo-200 text-sm mt-1">
                   {performanceData.totalOptimizations} of 100 optimizations used

@@ -13,7 +13,13 @@ interface UserMenuProps {
 export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
   const { logout } = useAuth();
   
-  const planDetails = SUBSCRIPTION_PLANS[user.subscriptionPlan];
+  // Safely access user properties
+  const firstName = user?.firstName || '';
+  const lastName = user?.lastName || '';
+  const initials = firstName && lastName ? `${firstName.charAt(0)}${lastName.charAt(0)}` : '?';
+  
+  const subscriptionPlan = user?.subscriptionPlan || 'free';
+  const planDetails = SUBSCRIPTION_PLANS[subscriptionPlan];
   const planName = planDetails ? planDetails.name : 'Free';
   
   const handleLogout = async () => {
@@ -25,13 +31,13 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
     <div className="flex items-center space-x-2">
       <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold overflow-hidden">
         {user.avatar ? (
-          <img src={user.avatar} alt={user.firstName} className="h-full w-full object-cover" />
+          <img src={user.avatar} alt={firstName} className="h-full w-full object-cover" />
         ) : (
-          `${user.firstName.charAt(0)}${user.lastName.charAt(0)}`
+          initials
         )}
       </div>
       <span className="text-sm font-medium hidden md:block">
-        {user.firstName} {user.lastName}
+        {firstName} {lastName}
       </span>
     </div>
   );
@@ -39,7 +45,7 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
   return (
     <Dropdown trigger={avatarTrigger} align="right">
       <div className="px-4 py-3 border-b border-gray-700">
-        <p className="text-sm font-medium text-white">{user.firstName} {user.lastName}</p>
+        <p className="text-sm font-medium text-white">{firstName} {lastName}</p>
         <p className="text-xs text-gray-400 mt-1">{user.email}</p>
         <div className="mt-2 flex items-center">
           <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-800 text-blue-200">

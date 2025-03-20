@@ -24,10 +24,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Check for existing user session on load
     const user = getCurrentUser();
     
-    // For demo purposes, force the user to have enterprise subscription
+    // For demo purposes, if there's a user, ensure they have a valid subscriptionPlan
     if (user) {
-      user.subscriptionPlan = 'enterprise';
-      localStorage.setItem('user', JSON.stringify(user));
+      if (!user.subscriptionPlan) {
+        user.subscriptionPlan = 'free';
+        localStorage.setItem('user', JSON.stringify(user));
+      }
     }
     
     setAuthState({
@@ -39,14 +41,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
   
   const handleLogin = async (credentials: LoginCredentials) => {
-    setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
-    
     try {
+      setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
+      
       const user = await login(credentials);
       
-      // For demo purposes, force the user to have enterprise subscription
-      user.subscriptionPlan = 'enterprise';
-      localStorage.setItem('user', JSON.stringify(user));
+      // Ensure the user has a subscriptionPlan
+      if (user && !user.subscriptionPlan) {
+        user.subscriptionPlan = 'enterprise';
+        localStorage.setItem('user', JSON.stringify(user));
+      }
       
       setAuthState({
         user,
@@ -55,6 +59,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         error: null
       });
     } catch (error) {
+      console.error('Login error:', error);
       setAuthState({
         user: null,
         isAuthenticated: false,
@@ -65,14 +70,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
   
   const handleSignup = async (credentials: SignupCredentials) => {
-    setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
-    
     try {
+      setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
+      
       const user = await signup(credentials);
       
-      // For demo purposes, force the user to have enterprise subscription
-      user.subscriptionPlan = 'enterprise';
-      localStorage.setItem('user', JSON.stringify(user));
+      // Ensure the user has a subscriptionPlan
+      if (user && !user.subscriptionPlan) {
+        user.subscriptionPlan = 'enterprise';
+        localStorage.setItem('user', JSON.stringify(user));
+      }
       
       setAuthState({
         user,
@@ -81,6 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         error: null
       });
     } catch (error) {
+      console.error('Signup error:', error);
       setAuthState({
         user: null,
         isAuthenticated: false,
@@ -91,8 +99,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
   
   const handleLogout = async () => {
-    setAuthState(prev => ({ ...prev, isLoading: true }));
-    
     try {
       // First update the state to ensure UI reflects logout immediately
       setAuthState({
