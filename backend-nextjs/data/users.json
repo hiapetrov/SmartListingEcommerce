@@ -38,5 +38,15 @@
     "id": "b75753e3-d7f1-4075-9ea3-c1f56cc661cf",
     "createdAt": "2025-03-20T17:01:37.647Z",
     "updatedAt": "2025-03-20T17:01:37.647Z"
+  },
+  {
+    "email": "fluidvisiondigitalart@gmail.com",
+    "firstName": "Alexander",
+    "lastName": "Petrov",
+    "hashedPassword": "$2b$10$gAhYY9wlDp43qbWroakPduv/r/roaLvzPioDl77MiKgaNH9cGyxvW",
+    "subscriptionPlan": "free",
+    "id": "8dad6abc-738c-4d34-88fb-f5c1a0360630",
+    "createdAt": "2025-03-22T01:47:35.906Z",
+    "updatedAt": "2025-03-22T01:47:35.906Z"
   }
 ]
