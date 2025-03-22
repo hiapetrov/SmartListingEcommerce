@@ -1,14 +1,14 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from '../providers/AuthProvider';
-import { MainLayout } from '../../widgets/layouts/main-layout/ui/MainLayout';
-import { GuestLayout } from '../../widgets/layouts/guest-layout/ui/GuestLayout';
-import ListingOptimizerPage from '../../pages/listing-optimizer';
-import UserProfilePage from '../../pages/user-profile';
-import MyProductsPage from '../../pages/my-products';
-import SubscriptionPage from '../../pages/subscription';
-import DashboardPage from '../../pages/dashboard';
-import { GuestLandingPage } from '../../pages/guest-landing';
+import { useAuth } from '@/app/providers/AuthProvider';
+import { MainLayout } from '@/widgets/layouts/main-layout/ui/MainLayout';
+import { GuestLayout } from '@/widgets/layouts/guest-layout/ui/GuestLayout';
+import ListingOptimizerPage from '@/pages/listing-optimizer';
+import UserProfilePage from '@/pages/user-profile';
+import MyProductsPage from '@/pages/my-products';
+import SubscriptionPage from '@/pages/subscription';
+import DashboardPage from '@/pages/dashboard';
+import { GuestLandingPage } from '@/pages/guest-landing';
 
 export const AppRouter: React.FC = () => {
   const { authState } = useAuth();

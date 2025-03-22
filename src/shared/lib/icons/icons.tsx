@@ -1,8 +1,11 @@
 import React from 'react';
+import { HamburgerIcon } from './HamburgerIcon';
 
 export interface IconProps {
   className?: string;
 }
+
+export { HamburgerIcon };
 
 export const SearchIcon: React.FC<IconProps> = ({ className = "h-5 w-5" }) => (
   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className={className}>

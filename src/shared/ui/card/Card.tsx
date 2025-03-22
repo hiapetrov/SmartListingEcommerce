@@ -1,4 +1,14 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, CSSProperties } from 'react';
+import { clsx } from 'clsx';
+import { 
+  cardBase, 
+  cardShadow, 
+  cardBorder, 
+  cardGradient, 
+  cardInteractive,
+  gradientFrom,
+  gradientTo
+} from './card.css';
 
 export interface CardProps {
   children: ReactNode;
@@ -20,18 +30,29 @@ export const Card: React.FC<CardProps> = ({
   gradient,
   onClick
 }) => {
-  const shadowClass = hasShadow ? 'shadow-sm hover:shadow-md' : '';
-  const borderClass = hasBorder ? 'border border-gray-200' : '';
-  const cursorClass = onClick ? 'cursor-pointer' : '';
+  const cardClass = clsx(
+    cardBase,
+    hasShadow && cardShadow,
+    hasBorder && cardBorder,
+    gradient && cardGradient,
+    onClick && cardInteractive,
+    className
+  );
+  
+  // Add gradient CSS variables if provided
+  const style: CSSProperties = {};
+  if (gradient) {
+    // Use type assertion to work with CSS variables
+    style[gradientFrom as any] = gradient.from;
+    style[gradientTo as any] = gradient.to;
+  }
   
   return (
     <div 
-      className={`bg-white rounded-lg p-6 ${shadowClass} ${borderClass} ${cursorClass} transition-shadow ${className}`}
+      className={cardClass}
       onClick={onClick}
+      style={style}
     >
-      {gradient && (
-        <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${gradient.from} ${gradient.to} rounded-t-lg`}></div>
-      )}
       {children}
     </div>
   );

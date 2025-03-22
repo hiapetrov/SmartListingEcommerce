@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { AuthModal } from '../../../src/features/auth/ui/AuthModal';
-import { Button } from '../../../src/shared/ui/button/Button';
+import { AuthModal } from '@/features/auth/ui/AuthModal';
+import { Button } from '@/shared/ui/button/Button';
 
 export const GuestLandingPage: React.FC = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
