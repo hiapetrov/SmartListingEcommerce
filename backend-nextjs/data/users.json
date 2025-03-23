@@ -48,5 +48,15 @@
     "id": "8dad6abc-738c-4d34-88fb-f5c1a0360630",
     "createdAt": "2025-03-22T01:47:35.906Z",
     "updatedAt": "2025-03-22T01:47:35.906Z"
+  },
+  {
+    "email": "chiara@ai.com",
+    "firstName": "Chiara",
+    "lastName": "Bresciani ",
+    "hashedPassword": "$2b$10$1T.RY6vbahf461HggslGXO7kLx0CCp/XfjFg24TsfXtvq62lRew8.",
+    "subscriptionPlan": "free",
+    "id": "360eed6a-6b9b-438a-ba53-c921bf9d7e1c",
+    "createdAt": "2025-03-22T21:08:04.686Z",
+    "updatedAt": "2025-03-22T21:08:04.686Z"
   }
 ]

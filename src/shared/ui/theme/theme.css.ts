@@ -1,6 +1,6 @@
 import { createTheme } from '@vanilla-extract/css';
 
-// Create theme variables based on existing Tailwind usage
+// Create theme using the pattern from the existing codebase
 export const [themeClass, vars] = createTheme({
   colors: {
     // Core colors
@@ -41,6 +41,7 @@ export const [themeClass, vars] = createTheme({
       700: '#374151',
       800: '#1F2937',
       900: '#111827',
+      950: '#0D1117',
     },
     
     // Semantic colors
@@ -62,6 +63,8 @@ export const [themeClass, vars] = createTheme({
       light: '#4B5563', // gray-600
       medium: '#374151', // gray-700
       dark: '#1F2937', // gray-800
+      error: '#B91C1C', // red-700
+      focus: '#3B82F6', // blue-500
     },
   },
   
@@ -76,6 +79,19 @@ export const [themeClass, vars] = createTheme({
     '3xl': '1.875rem',
     '4xl': '2.25rem',
     '5xl': '3rem',
+  },
+  
+  // Font weights
+  fontWeights: {
+    thin: '100',
+    extralight: '200',
+    light: '300',
+    normal: '400',
+    medium: '500',
+    semibold: '600',
+    bold: '700',
+    extrabold: '800',
+    black: '900',
   },
   
   // Spacing
@@ -130,6 +146,16 @@ export const [themeClass, vars] = createTheme({
     40: '40',
     50: '50',
     auto: 'auto',
+  },
+  
+  // Breakpoints (following existing pattern)
+  breakpoints: {
+    xs: '480px',
+    sm: '640px',
+    md: '768px',
+    lg: '1024px',
+    xl: '1280px',
+    '2xl': '1536px',
   },
   
   // Transitions
