@@ -1,11 +1,21 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, CSSProperties } from 'react';
+import {
+  modalOverlay,
+  modalContainer,
+  modalHeader,
+  modalTitle,
+  modalCloseButton,
+  modalContent,
+  modalSizeVariants,
+  modalWidthVar
+} from './modal.css';
 
 export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title: string;
   children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl';
+  size?: keyof typeof modalSizeVariants;
   showCloseButton?: boolean;
 }
 
@@ -47,31 +57,31 @@ export const Modal: React.FC<ModalProps> = ({
   
   if (!isOpen) return null;
   
-  const sizeClasses = {
-    sm: 'max-w-md',
-    md: 'max-w-lg',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl'
+  // Create style with correct width variable
+  const containerStyle: CSSProperties = {
+    [modalWidthVar as string]: modalSizeVariants[size].maxWidth
   };
   
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+    <div className={modalOverlay}>
       <div
         ref={modalRef} 
-        className={`${sizeClasses[size]} w-full bg-gray-800 border border-gray-700 rounded-lg shadow-xl overflow-hidden`}
+        className={modalContainer}
+        style={containerStyle}
       >
-        <div className="flex justify-between items-center p-4 border-b border-gray-700">
-          <h3 className="text-lg font-medium text-white">{title}</h3>
+        <div className={modalHeader}>
+          <h3 className={modalTitle}>{title}</h3>
           {showCloseButton && (
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-white"
+              className={modalCloseButton}
+              aria-label="Close modal"
             >
               &times;
             </button>
           )}
         </div>
-        <div className="p-6">
+        <div className={modalContent}>
           {children}
         </div>
       </div>

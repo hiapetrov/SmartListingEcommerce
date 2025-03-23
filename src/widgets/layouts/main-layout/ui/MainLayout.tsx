@@ -3,16 +3,22 @@ import { Outlet } from 'react-router-dom';
 import { Header } from '../../../header';
 import { Sidebar } from '../../sidebar';
 import { SidebarProvider } from '../../sidebar/context';
+import { 
+  layoutContainer, 
+  layoutContent, 
+  layoutMain, 
+  layoutInner 
+} from './main-layout.css';
 
 export const MainLayout: React.FC = () => {
   return (
     <SidebarProvider>
-      <div className="min-h-screen bg-gray-900 flex flex-col">
+      <div className={layoutContainer}>
         <Header />
-        <div className="flex flex-1 overflow-hidden">
+        <div className={layoutContent}>
           <Sidebar />
-          <div className="flex-1 overflow-auto">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className={layoutMain}>
+            <div className={layoutInner}>
               <Outlet />
             </div>
           </div>

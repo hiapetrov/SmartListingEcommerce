@@ -8,10 +8,22 @@ import { useAuth } from '../../../app/providers/AuthProvider';
 import { AuthModal } from '../../../features/auth/ui/AuthModal';
 import { Button } from '../../../shared/ui/button';
 import { useSidebar } from '../../layouts/sidebar/context';
+import {
+  headerContainer,
+  headerInner,
+  headerLeft,
+  hamburgerButton,
+  brandContainer,
+  brandIcon,
+  brandText,
+  searchContainer,
+  headerRight,
+  authButtonsContainer
+} from './header.css';
 
 export const Header: React.FC = () => {
   const { authState } = useAuth();
-  const { toggleMobileSidebar } = useSidebar();
+  const sidebarContext = useSidebar();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [initialAuthView, setInitialAuthView] = useState<'login' | 'signup'>('login');
   
@@ -25,34 +37,41 @@ export const Header: React.FC = () => {
     setIsAuthModalOpen(true);
   };
   
+  // Only use sidebar context if it exists (to handle guest layout)
+  const toggleSidebar = () => {
+    if (sidebarContext) {
+      sidebarContext.toggleMobileSidebar();
+    }
+  };
+  
   return (
-    <header className="bg-gradient-to-r from-gray-900 to-indigo-900 text-white shadow-lg border-b border-gray-800">
-      <div className="flex justify-between items-center px-6 py-4">
-        <div className="flex items-center space-x-2">
+    <header className={headerContainer}>
+      <div className={headerInner}>
+        <div className={headerLeft}>
           {/* Hamburger menu for mobile - only show when authenticated */}
           {authState.isAuthenticated && (
             <button 
               id="hamburger-button"
-              className="md:hidden mr-2 text-gray-300 hover:text-white"
-              onClick={toggleMobileSidebar}
+              className={hamburgerButton}
+              onClick={toggleSidebar}
             >
               <HamburgerIcon className="h-6 w-6" />
             </button>
           )}
           
-          <Link to="/" className="flex items-center space-x-2">
-            <ActivityIcon className="h-8 w-8 text-blue-400" />
-            <h1 className="text-xl font-bold">AI Listing Optimizer</h1>
+          <Link to="/" className={brandContainer}>
+            <ActivityIcon className={brandIcon} />
+            <h1 className={brandText}>AI Listing Optimizer</h1>
           </Link>
         </div>
         
         {authState.isAuthenticated && (
-          <div className="hidden md:block mx-4 flex-grow max-w-xl">
+          <div className={searchContainer}>
             <SearchBar />
           </div>
         )}
         
-        <div className="flex items-center space-x-4">
+        <div className={headerRight}>
           {authState.isAuthenticated && (
             <NotificationDropdown />
           )}
@@ -60,7 +79,7 @@ export const Header: React.FC = () => {
           {authState.isAuthenticated && authState.user ? (
             <UserMenu user={authState.user} />
           ) : (
-            <div className="flex space-x-2">
+            <div className={authButtonsContainer}>
               <Button
                 variant="outline"
                 size="sm"

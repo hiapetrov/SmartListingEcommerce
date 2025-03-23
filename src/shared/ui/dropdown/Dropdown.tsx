@@ -1,4 +1,16 @@
-﻿import React, { useState, useRef, useEffect } from 'react';
+﻿import React, { useState, useRef, useEffect, CSSProperties } from 'react';
+import { clsx } from 'clsx';
+import {
+  dropdownContainer,
+  dropdownTrigger,
+  dropdownMenu,
+  dropdownContent,
+  dropdownItemBase,
+  dropdownItemIcon,
+  dropdownDivider,
+  dropdownAlignmentVar,
+  dropdownWidthVar
+} from './dropdown.css';
 
 export interface DropdownProps {
   trigger: React.ReactNode;
@@ -13,7 +25,7 @@ export const Dropdown: React.FC<DropdownProps> = ({
   trigger,
   children,
   align = 'left',
-  width = 'w-48',
+  width = '12rem', // w-48 in Tailwind
   isOpen: controlledIsOpen,
   onToggle
 }) => {
@@ -50,17 +62,45 @@ export const Dropdown: React.FC<DropdownProps> = ({
     };
   }, [isControlled, isOpen, onToggle]);
   
-  const alignmentClass = align === 'left' ? 'left-0' : 'right-0';
+  // Convert Tailwind width class to CSS value
+  const getCSSWidth = (widthClass: string): string => {
+    // Handle direct CSS values
+    if (widthClass.includes('rem') || widthClass.includes('px') || widthClass.includes('%')) {
+      return widthClass;
+    }
+    
+    // Handle Tailwind width classes
+    if (widthClass.startsWith('w-')) {
+      const value = widthClass.replace('w-', '');
+      switch (value) {
+        case '48': return '12rem';
+        case '56': return '14rem';
+        case '64': return '16rem';
+        case '72': return '18rem';
+        case '80': return '20rem';
+        case 'full': return '100%';
+        default: return '12rem';
+      }
+    }
+    
+    return '12rem'; // Default
+  };
+  
+  // Create CSS vars for positioning
+  const menuStyle: CSSProperties = {
+    [dropdownAlignmentVar as string]: align,
+    [dropdownWidthVar as string]: getCSSWidth(width)
+  };
   
   return (
-    <div className="relative" ref={dropdownRef}>
-      <div onClick={toggleDropdown} className="cursor-pointer">
+    <div className={dropdownContainer} ref={dropdownRef}>
+      <div onClick={toggleDropdown} className={dropdownTrigger}>
         {trigger}
       </div>
       
       {isOpen && (
-        <div className={`absolute ${alignmentClass} mt-2 ${width} rounded-md shadow-lg bg-gray-800 border border-gray-700 ring-1 ring-black ring-opacity-5 z-50`}>
-          <div className="py-1">
+        <div className={dropdownMenu} style={menuStyle}>
+          <div className={dropdownContent}>
             {children}
           </div>
         </div>
@@ -84,15 +124,15 @@ export const DropdownItem: React.FC<DropdownItemProps> = ({
 }) => {
   return (
     <div
-      className={`flex items-center px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white cursor-pointer ${className}`}
+      className={clsx(dropdownItemBase, className)}
       onClick={onClick}
     >
-      {icon && <span className="mr-2">{icon}</span>}
+      {icon && <span className={dropdownItemIcon}>{icon}</span>}
       {children}
     </div>
   );
 };
 
 export const DropdownDivider: React.FC = () => {
-  return <div className="border-t border-gray-700 my-1"></div>;
+  return <div className={dropdownDivider}></div>;
 };

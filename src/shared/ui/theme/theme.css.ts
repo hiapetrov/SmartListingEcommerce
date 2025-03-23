@@ -7,6 +7,7 @@ export const [themeClass, vars] = createTheme({
     primary: '#3B82F6', // blue-500
     primaryLight: '#60A5FA', // blue-400
     primaryDark: '#2563EB', // blue-600
+    
     secondary: '#8B5CF6', // purple-500
     secondaryLight: '#A78BFA', // purple-400
     secondaryDark: '#7C3AED', // purple-600
@@ -27,6 +28,91 @@ export const [themeClass, vars] = createTheme({
     info: '#0EA5E9', // sky-500
     infoLight: '#38BDF8', // sky-400
     infoDark: '#0284C7', // sky-600
+    
+    // Extended palette for specific components
+    blue: {
+      100: '#DBEAFE',
+      200: '#BFDBFE',
+      300: '#93C5FD',
+      400: '#60A5FA',
+      500: '#3B82F6',
+      600: '#2563EB',
+      700: '#1D4ED8',
+      800: '#1E40AF',
+      900: '#1E3A8A',
+    },
+    
+    purple: {
+      100: '#EDE9FE',
+      200: '#DDD6FE',
+      300: '#C4B5FD',
+      400: '#A78BFA',
+      500: '#8B5CF6',
+      600: '#7C3AED',
+      700: '#6D28D9',
+      800: '#5B21B6',
+      900: '#4C1D95',
+    },
+    
+    green: {
+      100: '#D1FAE5',
+      200: '#A7F3D0',
+      300: '#6EE7B7',
+      400: '#34D399',
+      500: '#10B981',
+      600: '#059669',
+      700: '#047857',
+      800: '#065F46',
+      900: '#064E3B',
+    },
+    
+    red: {
+      100: '#FEE2E2',
+      200: '#FECACA',
+      300: '#FCA5A5',
+      400: '#F87171',
+      500: '#EF4444',
+      600: '#DC2626',
+      700: '#B91C1C',
+      800: '#991B1B',
+      900: '#7F1D1D',
+    },
+    
+    orange: {
+      100: '#FFEDD5',
+      200: '#FED7AA',
+      300: '#FDBA74',
+      400: '#FB923C',
+      500: '#F97316',
+      600: '#EA580C',
+      700: '#C2410C',
+      800: '#9A3412',
+      900: '#7C2D12',
+    },
+    
+    teal: {
+      100: '#CCFBF1',
+      200: '#99F6E4',
+      300: '#5EEAD4',
+      400: '#2DD4BF',
+      500: '#14B8A6',
+      600: '#0D9488',
+      700: '#0F766E',
+      800: '#115E59',
+      900: '#134E4A',
+    },
+    
+    indigo: {
+      100: '#E0E7FF',
+      200: '#C7D2FE',
+      300: '#A5B4FC',
+      400: '#818CF8',
+      500: '#6366F1',
+      600: '#4F46E5',
+      700: '#4338CA',
+      800: '#3730A3',
+      900: '#312E81',
+    },
     
     // Grayscale
     white: '#FFFFFF',

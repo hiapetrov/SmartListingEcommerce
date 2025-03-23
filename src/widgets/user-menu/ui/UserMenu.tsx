@@ -5,6 +5,16 @@ import { User } from '../../../features/auth/model/types';
 import { CogIcon, CreditCardIcon, LogoutIcon, UserIcon } from '../../../shared/lib/icons';
 import { useAuth } from '../../../app/providers/AuthProvider';
 import { SUBSCRIPTION_PLANS } from '../../../features/subscription/model/types';
+import {
+  userMenuTrigger,
+  avatarContainer,
+  userName,
+  dropdownHeader,
+  userFullName,
+  userEmail,
+  planBadgeContainer,
+  planBadge
+} from './user-menu.css';
 
 interface UserMenuProps {
   user: User;
@@ -28,15 +38,15 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
   
   // Create avatar trigger
   const avatarTrigger = (
-    <div className="flex items-center space-x-2">
-      <div className="h-8 w-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-bold overflow-hidden">
+    <div className={userMenuTrigger}>
+      <div className={avatarContainer}>
         {user.avatar ? (
           <img src={user.avatar} alt={firstName} className="h-full w-full object-cover" />
         ) : (
           initials
         )}
       </div>
-      <span className="text-sm font-medium hidden md:block">
+      <span className={userName}>
         {firstName} {lastName}
       </span>
     </div>
@@ -44,11 +54,11 @@ export const UserMenu: React.FC<UserMenuProps> = ({ user }) => {
   
   return (
     <Dropdown trigger={avatarTrigger} align="right">
-      <div className="px-4 py-3 border-b border-gray-700">
-        <p className="text-sm font-medium text-white">{firstName} {lastName}</p>
-        <p className="text-xs text-gray-400 mt-1">{user.email}</p>
-        <div className="mt-2 flex items-center">
-          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-800 text-blue-200">
+      <div className={dropdownHeader}>
+        <p className={userFullName}>{firstName} {lastName}</p>
+        <p className={userEmail}>{user.email}</p>
+        <div className={planBadgeContainer}>
+          <span className={planBadge}>
             {planName} Plan
           </span>
         </div>
